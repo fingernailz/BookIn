@@ -12,6 +12,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
@@ -20,6 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -34,7 +36,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       await AuthService.instance.signUpWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
-        displayName: _nameController.text,
+        username: _usernameController.text,
+        publicName: _nameController.text,
       );
 
       if (!mounted) return;
@@ -98,10 +101,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: _nameController,
                   decoration: const InputDecoration(
                     labelText: 'Full Name',
-                    prefixIcon: Icon(Icons.person_outline),
+                    prefixIcon: Icon(Icons.person),
                   ),
                   validator: (val) =>
-                      val != null && val.isNotEmpty ? null : 'Enter your name',
+                      val != null && val.isNotEmpty ? null : 'Enter your full name',
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Username',
+                    prefixIcon: Icon(Icons.alternate_email),
+                  ),
+                  validator: (val) =>
+                      val != null && val.length >= 3 ? null : 'Minimum 3 characters',
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
